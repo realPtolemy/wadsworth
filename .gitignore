@@ -1,0 +1,21 @@
+# cmake
+build/
+out/
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+
+# python
+.cache/
+__pycache__/
+*.py[oc]
+*.pyc
+build/
+dist/
+wheels/
+*.egg-info
+
+# virtual environments
+.venv/

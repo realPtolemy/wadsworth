@@ -1,0 +1,8 @@
+# wadsworth/.clang-format
+basedonstyle: google
+language: cpp
+standard: c++23
+columnlimit: 100
+usetab: always
+tabwidth: 4
+indentwidth: 4

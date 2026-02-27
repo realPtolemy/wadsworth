@@ -1,0 +1,16 @@
+[MASTER]
+# a comma-separated list of package or module names from where C extensions may
+# be loaded (useful if Python bindings later are written for the C++ drivers)
+extension-pkg-allow-list=
+
+[FORMAT]
+max-line-length=100
+indent-string='\t'
+
+[MESSAGES CONTROL]
+# disable overly pedantic rules
+# C0111: missing-docstring (forces docstrings on every tiny function)
+# C0103: invalid-name (hardware registers/IDs often violate standard naming)
+disable=
+    C0111,
+    C0103
