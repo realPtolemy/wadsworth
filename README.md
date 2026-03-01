@@ -12,9 +12,9 @@ With this side-quest project I am to explore low-level hardware control and adva
 
 ## Roadmap
 - [x] Project infrastructure, CI, and strict linting setup
-- [ ] Hardware Abstraction Layer (Serial Interface)
-- [ ] Linux Serial implementation
-- [ ] STS3215 Servo Protocol driver
+- [x] Hardware Abstraction Layer (Serial Interface)
+- [x] Linux Serial implementation
+- [x] STS3215 Servo Protocol driver
 - [ ] Forward & Inverse Kinematics engine
 - [ ] VLM integration for visual workspace navigation
 - [ ] Dual-arm synchronization
