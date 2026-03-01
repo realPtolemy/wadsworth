@@ -4,6 +4,7 @@ project(SO_ARM_101_Controller)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # define header files
 include_directories(
@@ -23,4 +24,4 @@ set(SOURCES
 add_executable(servo_test ${SOURCES})
 
 # enabling compile warnings
-target_compile_options(servo_test PRIVATE -Wall -Wextra - Wpedantic)
+target_compile_options(servo_test PRIVATE -Wall -Wextra -Wpedantic)
