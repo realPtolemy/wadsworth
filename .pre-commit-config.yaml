@@ -4,12 +4,14 @@ repos:
     rev: v22.1.0
     hooks:
       - id: clang-format
+        types_or: [c, c++]
 
   # c++ linter
   - repo: https://github.com/cpplint/cpplint
     rev: 2.0.2
     hooks:
       - id: cpplint
+        types_or: [c, c++]
 
   # python formatter
   - repo: https://github.com/google/yapf

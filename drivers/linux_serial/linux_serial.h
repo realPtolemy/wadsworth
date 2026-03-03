@@ -17,7 +17,7 @@
 namespace wadsworth::io {
 
 class LinuxSerial : public SerialInterface {
- public:
+   public:
 	explicit LinuxSerial(const char* portname);
 	~LinuxSerial() override;  // close the port
 
@@ -25,10 +25,10 @@ class LinuxSerial : public SerialInterface {
 	size_t ReadBytes(uint8_t* buffer, size_t length) override;
 	void Flush() override;
 
- private:
+   private:
 	int fd_;  // linux file descriptor for the serial descriptor
 };
 
 }  // namespace wadsworth::io
 
-#endif  // DRIVERS_LINUX_SERIAL_LINUX_SERIAL_H_
+#endif	// DRIVERS_LINUX_SERIAL_LINUX_SERIAL_H_

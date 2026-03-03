@@ -1,12 +1,13 @@
-//	Author: Love Mitteregger
-//	Date: 2025-FEB-28
+// Copyright 2026 Love Mitteregger
+// Author: Love Mitteregger
+// Date: 2026-FEB-28
 //
-//	About this file:
-//	It contains the definition of the Sts3215Driver class,
-//	and the instruction codes and their respective register addresses.
+// About this file:
+// It contains the definition of the Sts3215Driver class,
+// and the instruction codes and their respective register addresses.
 
-#ifndef STS3215_H_
-#define STS3215_H_
+#ifndef DRIVERS_STS3215_STS3215_H_
+#define DRIVERS_STS3215_STS3215_H_
 
 #include <cstdint>
 #include <span>
@@ -127,4 +128,4 @@ class Sts3215Driver {
 
 }  // namespace wadsworth::servos
 
-#endif	// STS3215_H_
+#endif	// DRIVERS_STS3215_STS3215_H_

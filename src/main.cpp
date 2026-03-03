@@ -1,3 +1,4 @@
+// Copyright 2026 Love Mitteregger
 #include <chrono>
 #include <iostream>
 #include <thread>

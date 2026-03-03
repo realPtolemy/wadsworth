@@ -1,3 +1,4 @@
+// Copyright 2026 Love Mitteregger
 #include "sts3215.h"
 
 #include <algorithm>
@@ -71,14 +72,14 @@ bool Sts3215Driver::ReceivePacket(uint8_t expected_id, std::vector<uint8_t>& out
 	sum = std::accumulate(payload.begin(), payload.end() - 1, sum);
 	if (static_cast<uint8_t>(~sum) != payload.back()) {
 		serial_.Flush();
-		return false;  // TODO: add error log for corrupted packet
+		return false;  // TODO(Love Mitteregger): add error log for corrupted packet
 	}
 
 	// validate that payload is error free
 	if (payload[0] != 0x00) {
 		serial_.Flush();
 		return false;
-		// TODO: add error log here for overheated/overloaded servo etc...
+		// TODO(Love Mitteregger): add error log here for overheated/overloaded servo etc...
 		// Bit 0: Voltage | Bit 1: Angle Limit | Bit 2: Overheat | Bit 3: Range
 		// Bit 4: Checksum | Bit 5: Overload | Bit 6: Instruction
 	}
