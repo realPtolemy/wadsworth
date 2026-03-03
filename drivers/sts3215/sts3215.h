@@ -11,7 +11,6 @@
 
 #include <cstdint>
 #include <span>
-#include <vector>
 
 #include "../../include/serial_interface.h"
 
@@ -123,7 +122,7 @@ class Sts3215Driver {
 					std::span<const uint8_t> parameters);
 
 	// Reads the response packet and validates the checksum. Returns true if valid.
-	bool ReceivePacket(uint8_t expected_id, std::vector<uint8_t>& out_parameters);
+	bool ReceivePacket(uint8_t expected_id, std::span<uint8_t> out_buffer, size_t& out_length);
 };
 
 }  // namespace wadsworth::servos
