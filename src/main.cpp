@@ -42,9 +42,16 @@ int main() {
 
 	// 5. Move off-center (2048 + 500 steps)
 	// 500 steps * 0.088 degrees/step = ~44 degrees
-	std::cout << "Moving to Position 2548...\n";
-	arm.SetTargetPosition(test_id, 2548);
+	std::cout << "Moving off Center Position (2548)...\n";
+	std::array<wadsworth::servos::ServoKinematicTarget, 1> targets = {{
+		{test_id, 20, 2548, 1000}  // ID 1, Accel 20, Pos 2548, Speed 1000
+	}};
+	arm.SyncWriteKinematics(targets);
 	std::this_thread::sleep_for(std::chrono::seconds(2));
+
+	// std::cout << "Moving to Position 2548...\n";
+	// arm.SetTargetPosition(test_id, 2548);
+	// std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	// 6. Return to Center
 	std::cout << "Returning to Center (2048)...\n";

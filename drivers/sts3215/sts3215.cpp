@@ -191,4 +191,49 @@ bool Sts3215Driver::SyncWriteTargetPositions(std::span<const ServoPosition> targ
 	return true;
 }
 
+bool Sts3215Driver::SyncWriteKinematics(std::span<const ServoKinematicTarget> targets) {
+	if (targets.empty()) return true;
+
+	// 1 byte Start Address + 1 byte Data Length + (N servos * (1 byte ID + 7 bytes Data))
+	const size_t bytes_per_servo = 7;
+	const size_t num_parameters = 2 + (targets.size() * (1 + bytes_per_servo));
+	if (num_parameters > kMaxPacketSize) return false;
+
+	std::array<uint8_t, kMaxPacketSize> parameters;
+
+	// Start writing at the Acceleration register (0x29)
+	parameters[0] = static_cast<uint8_t>(feetech::sts3215::Register::kAcceleration);
+	parameters[1] = bytes_per_servo;  // Tell the servo to expect 7 bytes of data
+
+	size_t idx = 2;
+	for (const auto& target : targets) {
+		uint16_t position = target.position;
+		if (position >= feetech::sts3215::kMaxResolution) {
+			position = feetech::sts3215::kMaxResolution - 1;
+		}
+
+		parameters[idx++] = target.id;
+
+		// 1. Acceleration (0x29) - 1 Byte
+		parameters[idx++] = target.acceleration;
+
+		// 2. Goal Position (0x2A) - 2 Bytes (Little Endian)
+		parameters[idx++] = static_cast<uint8_t>(position & 0xFF);
+		parameters[idx++] = static_cast<uint8_t>((position >> 8) & 0xFF);
+
+		// 3. Goal Time (0x2C) - 2 Bytes (Write 0 to use Speed/Accel limits instead)
+		parameters[idx++] = 0;
+		parameters[idx++] = 0;
+
+		// 4. Goal Speed (0x2E) - 2 Bytes (Little Endian)
+		parameters[idx++] = static_cast<uint8_t>(target.speed & 0xFF);
+		parameters[idx++] = static_cast<uint8_t>((target.speed >> 8) & 0xFF);
+	}
+
+	SendPacket(feetech::kBroadcastId, feetech::Instruction::kSyncWrite,
+			   std::span{parameters.data(), idx});
+
+	return true;
+}
+
 }  // namespace wadsworth::servos

@@ -27,8 +27,8 @@ enum class Instruction : uint8_t {
 	kWriteData = 0x03,
 	kRegWrite = 0x04,
 	kAction = 0x05,
-	kSyncRead = 0x62,
-	kSyncWrite = 0x63
+	kSyncRead = 0x82,
+	kSyncWrite = 0x83
 };
 
 namespace sts3215 {
@@ -87,6 +87,13 @@ struct ServoPosition {
 	uint16_t position;
 };
 
+struct ServoKinematicTarget {
+	uint8_t id;
+	uint8_t acceleration;  // [0-254] (Value * 100 steps/s^2)
+	uint16_t position;	   // [0-4095]
+	uint16_t speed;		   // [0-3400] steps/s
+};
+
 class Sts3215Driver {
    public:
 	static constexpr size_t kMaxPacketSize = 256;
@@ -109,6 +116,9 @@ class Sts3215Driver {
 
 	// move multiple servos simultaneously (a broadcast command with no return packet)
 	bool SyncWriteTargetPositions(std::span<const ServoPosition> targets);
+
+	// move multiple servos simultaneously with coordinated position, speed, and acceleration
+	bool SyncWriteKinematics(std::span<const ServoKinematicTarget> targets);
 
    private:
 	io::SerialInterface& serial_;
