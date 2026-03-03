@@ -24,6 +24,7 @@
 #include <unistd.h>	  // UNIX standard function definitions
 
 // c++ std libs
+#include <algorithm>
 #include <cerrno>
 #include <cstring>
 #include <iostream>
@@ -111,24 +112,38 @@ size_t LinuxSerial::ReadBytes(uint8_t* buffer, size_t length) {
 	size_t total_bytes_read = 0;
 	const int kTimeoutMs = 2;  // NOTE: adjust based on control loop speed
 
-	struct pollfd fds[1];
-	fds[0].fd = fd_;
-	fds[0].events = POLLIN;
-
 	while (total_bytes_read < length) {
+		// serve data from fast internal buffer
+		if (rx_head_ < rx_tail_) {
+			size_t available = rx_tail_ - rx_head_;
+			size_t chunk = std::min(available, length - total_bytes_read);
+			std::copy_n(rx_buffer_.begin() + rx_head_, chunk, buffer + total_bytes_read);
+			rx_head_ += chunk;
+			total_bytes_read += chunk;
+			continue;
+		}
+
+		// buffer is empty, reset pointers to maximize contiguous space and wait for hardware data
+		rx_head_ = 0;
+		rx_tail_ = 0;
+		struct pollfd fds[1];
+		fds[0].fd = fd_;
+		fds[0].events = POLLIN;
+
 		int poll_result = poll(fds, 1, kTimeoutMs);
 		if (poll_result == 0) break;					  // timeout reached
 		if (poll_result < 0 && errno == EINTR) continue;  // poll interrupted by sys signal, retry
 		if (poll_result < 0) break;						  // hard os error during poll
 		if (!(fds[0].revents & POLLIN)) break;			  // hardware error/disconnect event
 
-		ssize_t read_result = read(fd_, buffer + total_bytes_read, length - total_bytes_read);
+		ssize_t read_result = read(fd_, rx_buffer_.data(), rx_buffer_.size());
+
 		if (read_result > 0) {
-			total_bytes_read += static_cast<size_t>(read_result);
-			continue;
+			rx_tail_ = static_cast<size_t>(read_result);
+			continue;  // loop back up to step 1 to copy the new data out
 		}
-		if (read_result < 0 && (errno == EINTR || errno == EAGAIN))
-			continue;  // signal interrupt, retry
+
+		if (read_result < 0 && (errno == EINTR || errno == EAGAIN)) continue;  // signal interrupt
 
 		// TODO(Love_Mitteregger): Hard error, need to add log here.
 		break;
@@ -137,7 +152,11 @@ size_t LinuxSerial::ReadBytes(uint8_t* buffer, size_t length) {
 }
 
 void LinuxSerial::Flush() {
-	if (fd_ >= 0) tcflush(fd_, TCIOFLUSH);
+	if (fd_ >= 0) {
+		tcflush(fd_, TCIOFLUSH);
+		rx_head_ = 0;
+		rx_tail_ = 0;
+	}
 }
 
 }  // namespace wadsworth::io

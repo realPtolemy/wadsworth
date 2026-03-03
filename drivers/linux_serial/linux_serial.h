@@ -9,6 +9,7 @@
 #ifndef DRIVERS_LINUX_SERIAL_LINUX_SERIAL_H_
 #define DRIVERS_LINUX_SERIAL_LINUX_SERIAL_H_
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 
@@ -27,6 +28,9 @@ class LinuxSerial : public SerialInterface {
 
    private:
 	int fd_;  // linux file descriptor for the serial descriptor
+	std::array<uint8_t, 512> rx_buffer_;
+	size_t rx_head_ = 0;
+	size_t rx_tail_ = 0;
 };
 
 }  // namespace wadsworth::io
