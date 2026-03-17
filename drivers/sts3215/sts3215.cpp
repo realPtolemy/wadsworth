@@ -101,6 +101,17 @@ bool Sts3215Driver::Ping(uint8_t id) {
 	return ReceivePacket(id, rx_buffer, rx_length);
 }
 
+bool Sts3215Driver::SetTorqueEnable(uint8_t id, bool enable) {
+	const std::array<uint8_t, 2> parameters = {
+		static_cast<uint8_t>(feetech::sts3215::Register::kTorqueEnable),
+		static_cast<uint8_t>(enable ? 1 : 0)};
+	SendPacket(id, feetech::Instruction::kWriteData, parameters);
+
+	std::array<uint8_t, 16> rx_buffer;
+	size_t rx_length = 0;
+	return ReceivePacket(id, rx_buffer, rx_length);
+}
+
 bool Sts3215Driver::SetMiddlePosition(uint8_t id) {
 	const std::array<uint8_t, 2> parameters = {
 		static_cast<uint8_t>(feetech::sts3215::Register::kTorqueEnable), 128};
@@ -194,16 +205,16 @@ bool Sts3215Driver::SyncWriteTargetPositions(std::span<const ServoPosition> targ
 bool Sts3215Driver::SyncWriteKinematics(std::span<const ServoKinematicTarget> targets) {
 	if (targets.empty()) return true;
 
-	// 1 byte Start Address + 1 byte Data Length + (N servos * (1 byte ID + 7 bytes Data))
+	// 1 byte start address + 1 byte data length + (N servos * (1 byte ID + 7 bytes data))
 	const size_t bytes_per_servo = 7;
 	const size_t num_parameters = 2 + (targets.size() * (1 + bytes_per_servo));
 	if (num_parameters > kMaxPacketSize) return false;
 
 	std::array<uint8_t, kMaxPacketSize> parameters;
 
-	// Start writing at the Acceleration register (0x29)
+	// start writing at the acceleration register (0x29)
 	parameters[0] = static_cast<uint8_t>(feetech::sts3215::Register::kAcceleration);
-	parameters[1] = bytes_per_servo;  // Tell the servo to expect 7 bytes of data
+	parameters[1] = bytes_per_servo;  // tell the servo to expect 7 bytes of data
 
 	size_t idx = 2;
 	for (const auto& target : targets) {
@@ -214,18 +225,18 @@ bool Sts3215Driver::SyncWriteKinematics(std::span<const ServoKinematicTarget> ta
 
 		parameters[idx++] = target.id;
 
-		// 1. Acceleration (0x29) - 1 Byte
+		// 1. acceleration (0x29) - 1 byte
 		parameters[idx++] = target.acceleration;
 
-		// 2. Goal Position (0x2A) - 2 Bytes (Little Endian)
+		// 2. goal position (0x2A) - 2 bytes (little endian)
 		parameters[idx++] = static_cast<uint8_t>(position & 0xFF);
 		parameters[idx++] = static_cast<uint8_t>((position >> 8) & 0xFF);
 
-		// 3. Goal Time (0x2C) - 2 Bytes (Write 0 to use Speed/Accel limits instead)
+		// 3. goal time (0x2C) - 2 bytes - 0 makes goal time rely on speed and acceleration
 		parameters[idx++] = 0;
 		parameters[idx++] = 0;
 
-		// 4. Goal Speed (0x2E) - 2 Bytes (Little Endian)
+		// 4. goal speed (0x2E) - 2 bytes (little endian)
 		parameters[idx++] = static_cast<uint8_t>(target.speed & 0xFF);
 		parameters[idx++] = static_cast<uint8_t>((target.speed >> 8) & 0xFF);
 	}

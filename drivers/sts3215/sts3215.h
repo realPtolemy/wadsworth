@@ -105,6 +105,9 @@ class Sts3215Driver {
 	// send ping to check if servo with ID (0-253) is online
 	bool Ping(uint8_t id);
 
+	// turn on/off torque
+	bool SetTorqueEnable(uint8_t id, bool enable);
+
 	// calibrate current position as center (360 degree arbitrary)
 	bool SetMiddlePosition(uint8_t id);
 

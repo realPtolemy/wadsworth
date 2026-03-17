@@ -15,7 +15,8 @@ With this side-quest project I am to explore low-level hardware control and adva
 - [x] Hardware Abstraction Layer (Serial Interface)
 - [x] Linux Serial implementation
 - [x] STS3215 Servo Protocol driver
-- [ ] Forward & Inverse Kinematics engine
+- [x] Forward & Inverse Kinematics engine
+- [ ] MuJoCo setup for simulation training
 - [ ] VLM integration for visual workspace navigation
 - [ ] Dual-arm synchronization
 

@@ -8,16 +8,19 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # define header files
 include_directories(
-  include
-  drivers/linux_serial
-  drivers/sts3215
+	cfg
+	drivers/linux_serial
+	drivers/sts3215
+	include
 )
 
 # define source files
 set(SOURCES
-  src/main.cpp
-  drivers/linux_serial/linux_serial.cpp
-  drivers/sts3215/sts3215.cpp
+	src/arm_calibration.cpp
+	src/arm_kinematics.cpp
+	src/main.cpp
+	drivers/linux_serial/linux_serial.cpp
+	drivers/sts3215/sts3215.cpp
 )
 
 # the executable
