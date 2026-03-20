@@ -1,0 +1,70 @@
+<mujoco model="scene">
+    <include file="so101_new_calib.xml" />
+
+    <visual>
+        <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
+        <rgba haze="0.15 0.25 0.35 1" />
+        <global azimuth="160" elevation="-20" />
+    </visual>
+
+    <asset>
+        <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512"
+            height="3072" />
+        <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4"
+            rgb2="0.1 0.2 0.3"
+            markrgb="0.8 0.8 0.8" width="300" height="300" />
+        <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5"
+            reflectance="0.2" />
+        <!-- Wood-toned table surface -->
+        <material name="table" rgba="0.75 0.60 0.42 1" reflectance="0.05" />
+        <!-- Bright red ball for easy visual detection -->
+        <material name="ball" rgba="0.9 0.15 0.1 1" reflectance="0.1" />
+    </asset>
+
+    <worldbody>
+        <light pos="0 0 3.5" dir="0 0 -1" directional="true" />
+
+        <!-- group 0: background infrastructure -->
+        <geom name="floor" group="0" size="0 0 0.05" pos="0 0 0" type="plane" material="groundplane" />
+
+        <!-- group 1: scene furniture / markers -->
+        <!-- Table: 0.6m x 0.5m x 0.05m. Top surface at z=0 (flush with arm base).
+             Friction: sliding=0.6, torsional=0.005, rolling=0.0002 (wood-like). -->
+        <!--
+        <geom name="table"
+              group="1"
+              type="box"
+              size="0.3 0.25 0.025"
+              pos="0.15 0 -0.025"
+              material="table"
+              friction="0.6 0.005 0.0002" />
+        -->
+
+        <!-- Optional target zone: visual-only flat marker on the floor.
+             contype/conaffinity=0 means no physics interaction.
+             Move pos to wherever the throw target should be. -->
+        <geom name="target_zone"
+              group="1"
+              type="cylinder"
+              size="0.1 0.001"
+              pos="1.0 0 0.001"
+              rgba="0.2 0.8 0.2 0.5"
+              contype="0"
+              conaffinity="0" />
+
+        <!-- group 2: manipulable object -->
+        <!-- Ball: radius=0.03m (3cm), mass=0.027kg (27g).
+             friction: rubber-like. solref damping < 1.0 gives slight restitution. -->
+        <body name="ball" pos="0.2 0 0.03">
+            <freejoint name="ball_freejoint" />
+            <geom name="ball"
+                  group="2"
+                  type="sphere"
+                  size="0.03"
+                  mass="0.027"
+                  material="ball"
+                  friction="0.8 0.01 0.0005"
+                  solref="0.02 0.8" />
+        </body>
+    </worldbody>
+</mujoco>

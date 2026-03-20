@@ -28,3 +28,16 @@ add_executable(servo_test ${SOURCES})
 
 # enabling compile warnings
 target_compile_options(servo_test PRIVATE -Wall -Wextra -Wpedantic)
+
+# MuJoCo SO-ARM101 loader
+set(MUJOCO_ROOT "$ENV{HOME}/.mujoco/mujoco-3.6.0")
+set(SO101_SCENE_XML "${CMAKE_CURRENT_SOURCE_DIR}/sim/scene.xml")
+
+add_executable(mujoco_loader src/mujoco_loader.cpp)
+target_include_directories(mujoco_loader PRIVATE ${MUJOCO_ROOT}/include)
+target_link_libraries(mujoco_loader PRIVATE ${MUJOCO_ROOT}/lib/libmujoco.so)
+target_compile_definitions(mujoco_loader PRIVATE
+    SCENE_XML_PATH="${SO101_SCENE_XML}"
+    MUJOCO_PLUGIN_DIR="${MUJOCO_ROOT}/bin/mujoco_plugin"
+)
+target_compile_options(mujoco_loader PRIVATE -Wall -Wextra -Wpedantic)
