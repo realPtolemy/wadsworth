@@ -19,3 +19,7 @@ wheels/
 
 # virtual environments
 .venv/
+.so101/
+
+# local env vars (use .env.example as template)
+.env

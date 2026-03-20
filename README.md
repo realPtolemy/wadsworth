@@ -16,7 +16,7 @@ With this side-quest project I am to explore low-level hardware control and adva
 - [x] Linux Serial implementation
 - [x] STS3215 Servo Protocol driver
 - [x] Forward & Inverse Kinematics engine
-- [ ] MuJoCo setup for simulation training
+- [x] MuJoCo simulation environment with SO-ARM101 and objects
 - [ ] VLM integration for visual workspace navigation
 - [ ] Dual-arm synchronization
 
@@ -42,6 +42,41 @@ cmake -G Ninja ..
 ninja
 ./servo_test
 ```
+
+---
+
+## Simulation
+
+### Prerequisites
+
+MuJoCo 3.6.0 must be installed at `~/.mujoco/mujoco-3.6.0`. The following environment variables are required — copy `.env.example` to `.env` and they will be set:
+
+```bash
+cp .env.example .env
+source .env
+```
+
+### Running the simulation viewer
+
+```bash
+LD_LIBRARY_PATH=~/.mujoco/mujoco-3.6.0/lib \
+~/.mujoco/mujoco-3.6.0/bin/simulate \
+sim/scene.xml
+```
+
+### Python environment
+
+The RL training environment requires Python 3.14 and is managed with `uv`:
+
+```bash
+uv venv --python 3.14 .so101
+MUJOCO_PATH=~/.mujoco/mujoco-3.6.0 \
+MUJOCO_PLUGIN_PATH=~/.mujoco/mujoco-3.6.0/bin/mujoco_plugin \
+uv pip install mujoco numpy --python .so101/bin/python
+source .so101/bin/activate
+```
+
+---
 
 #### For contributors
 If you plan to write code or submit pull requests, please set up our automated linting pipeline (Google C++ and Python Style Guides).
