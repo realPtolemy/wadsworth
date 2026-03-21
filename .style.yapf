@@ -1,4 +1,4 @@
 [style]
 based_on_style = google
-column_limt = 100
+column_limit = 100
 use_tabs = true

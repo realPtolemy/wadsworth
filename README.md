@@ -47,33 +47,39 @@ ninja
 
 ## Simulation
 
-### Prerequisites
+MuJoCo 3.6.0 must be installed at `~/.mujoco/mujoco-3.6.0`. The scene model lives in `sim/scene.xml` and includes the SO-ARM101 MJCF, a ball, and an optional table and target zone.
 
-MuJoCo 3.6.0 must be installed at `~/.mujoco/mujoco-3.6.0`. The following environment variables are required — copy `.env.example` to `.env` and they will be set:
+### Setup
+
+Requires Python 3.14. Copy `.env.example` to `.env`, then create the virtual environment:
 
 ```bash
 cp .env.example .env
 source .env
-```
-
-### Running the simulation viewer
-
-```bash
-LD_LIBRARY_PATH=~/.mujoco/mujoco-3.6.0/lib \
-~/.mujoco/mujoco-3.6.0/bin/simulate \
-sim/scene.xml
-```
-
-### Python environment
-
-The RL training environment requires Python 3.14 and is managed with `uv`:
-
-```bash
 uv venv --python 3.14 .so101
 MUJOCO_PATH=~/.mujoco/mujoco-3.6.0 \
 MUJOCO_PLUGIN_PATH=~/.mujoco/mujoco-3.6.0/bin/mujoco_plugin \
-uv pip install mujoco numpy --python .so101/bin/python
-source .so101/bin/activate
+uv pip install mujoco numpy --python .so101/bin/python3
+```
+
+### Viewer
+
+Open the scene interactively in the MuJoCo viewer:
+
+```bash
+LD_LIBRARY_PATH=~/.mujoco/mujoco-3.6.0/lib \
+~/.mujoco/mujoco-3.6.0/bin/simulate sim/scene.xml
+```
+
+### RL Environment
+
+`python/env.py` implements `SO101Env`, a Gymnasium-compatible wrapper with a 21-dim observation space and 6-dim action space. The reward function is a stub, overridden per skill during RL training.
+
+Run the environment smoke test with random actions:
+
+```bash
+source .env
+uv run python3 python/test_env.py
 ```
 
 ---

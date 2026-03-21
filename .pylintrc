@@ -1,7 +1,13 @@
 [MASTER]
 # a comma-separated list of package or module names from where C extensions may
 # be loaded (useful if Python bindings later are written for the C++ drivers)
-extension-pkg-allow-list=
+extension-pkg-allow-list=mujoco,numpy
+
+[TYPECHECK]
+# mujoco and numpy are C extensions installed in the project venv, not the
+# pre-commit venv — suppress import and member errors for these packages
+ignored-modules=mujoco,numpy
+ignored-classes=mujoco,numpy
 
 [FORMAT]
 max-line-length=100
@@ -13,4 +19,6 @@ indent-string='\t'
 # C0103: invalid-name (hardware registers/IDs often violate standard naming)
 disable=
     C0111,
-    C0103
+    C0103,
+    R0902,
+    E0401
