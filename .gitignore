@@ -7,6 +7,9 @@ out/
 .idea/
 .DS_Store
 
+# AGENT files
+.AGENTS.md
+
 # python
 .cache/
 __pycache__/

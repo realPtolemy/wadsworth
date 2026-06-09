@@ -41,3 +41,14 @@ target_compile_definitions(mujoco_loader PRIVATE
     MUJOCO_PLUGIN_DIR="${MUJOCO_ROOT}/bin/mujoco_plugin"
 )
 target_compile_options(mujoco_loader PRIVATE -Wall -Wextra -Wpedantic)
+
+# Hardware validation demo (real arm counterpart to python/demo.py)
+set(HW_DEMO_SOURCES
+	src/hardware_demo.cpp
+	src/arm_kinematics.cpp
+	src/arm_calibration.cpp
+	drivers/linux_serial/linux_serial.cpp
+	drivers/sts3215/sts3215.cpp
+)
+add_executable(hardware_demo ${HW_DEMO_SOURCES})
+target_compile_options(hardware_demo PRIVATE -Wall -Wextra -Wpedantic)
